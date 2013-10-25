@@ -1,0 +1,19 @@
+apply plugin: 'war'
+
+repositories {
+    mavenCentral()
+    mavenLocal()
+}
+
+configurations {
+    provided
+}
+
+sourceSets {
+      main { compileClasspath += configurations.provided }
+}
+
+dependencies {
+    provided 'javax:javaee-api:7.0'
+    
+}
