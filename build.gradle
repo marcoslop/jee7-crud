@@ -1,19 +1,36 @@
 apply plugin: 'war'
 
 repositories {
-    mavenCentral()
-    mavenLocal()
+	mavenCentral()
+	mavenLocal()
 }
 
 configurations {
-    provided
+	provided
 }
 
 sourceSets {
-      main { compileClasspath += configurations.provided }
+	main { compileClasspath += configurations.provided }
+	test {
+		compileClasspath += main.output + configurations.provided + main.compileClasspath
+		runtimeClasspath += main.output + configurations.provided + main.compileClasspath + main.runtimeClasspath
+	}
 }
 
 dependencies {
-    provided 'javax:javaee-api:7.0'
-    
+	provided 'javax:javaee-api:7.0'
+
+	testCompile 'junit:junit:4.8.1'
+	testCompile 'org.mockito:mockito-all:1.9.5'
+
+	testCompile 'org.jboss.arquillian.junit:arquillian-junit-container:1.1.1.Final'
+	testCompile "org.jboss.shrinkwrap.descriptors:shrinkwrap-descriptors-api-javaee:2.0.0-alpha-3"
+	testCompile "org.glassfish.jersey.core:jersey-client:2.2"
+	testCompile "org.jboss.arquillian:arquillian-bom:1.0.3.Final"	// set to 1.0.3.Final instead of 1.1.1.Final because of an exception "WELD-001456 Argument resolvedBean must not be null". Set to 1.0.3.Final as said here: http://stackoverflow.com/questions/17806480/arquillian-fails-to-inject-dependencies-after-the-first-test-class
+
+	testRuntime "org.jboss.shrinkwrap.descriptors:shrinkwrap-descriptors-impl-javaee:2.0.0-alpha-3"
+	testRuntime "org.hsqldb:hsqldb:2.0.0"
+	testRuntime "org.glassfish.main.extras:glassfish-embedded-all:4.0"
+
+	testRuntime "org.jboss.arquillian.container:arquillian-glassfish-embedded-3.1:1.0.0.CR4"
 }
